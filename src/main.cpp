@@ -65,11 +65,11 @@ if(!command_s.command.equals("")){
         mode.setBright(atoi(command_s.data.c_str()));
       STRCASE ("Delay")
         mode.setDelay(atoi(command_s.data.c_str()));
-      STRCASE ("NumLeds")
+      STRCASE ("EndLed")
         mode.setNumbLeds(atoi(command_s.data.c_str()));  
-      STRCASE ("SetStardLed")
+      STRCASE ("StartLed")
         mode.setStartLed(atoi(command_s.data.c_str()));  
-      STRCASE ("SetBlending")
+      STRCASE ("Blend")
         mode.setStartLed(atoi(command_s.data.c_str()));  
 
       STRCASE ("WifiAP") 

@@ -14,11 +14,16 @@ private:
     
     int MODE = 1; 
     int NEWMODE = 1;
+    
+    int BRIGHTNESS = 60;
+    int CURBRIGHTNESS = 0; //если 0 - то плавный запуск
 
     int START_LED_INDEX = 0;
-    int NUM_LEDS  =  300;
-    uint8_t BRIGHTNESS = 60;
-    uint8_t CURBRIGHTNESS = 0; //если 0 - то плавный запуск
+    int CUR_START_LED_INDEX = 0;
+    
+    int NUM_LEDS = 300;
+    int CUR_NUM_LEDS = 300;
+
     int UPDATES_PER_SECOND = 10;
 
     CRGB * leds = new CRGB[NUM_LEDS];
@@ -29,7 +34,8 @@ private:
     void FillLEDsFromPaletteColors( uint8_t colorIndex, uint8_t brightness);
 
     void changeMode();
-
+    void SetupTotallyRandomPalette();
+    void slightChange(int * def_value, int * cur_value, bool clean_min = false, bool clean_max = false);
 public:
     Mode();
     ~Mode();
@@ -41,6 +47,7 @@ public:
     void setDelay(int value);
     void setMode(int value);
     void setBlending(int value);
+
      
 };
 
