@@ -6,8 +6,6 @@
 #include "MemConfig.hpp"
 #include "Mode.hpp"
 
-
-
 #define STRSWITCH(STR)      char _x[16]; strcpy(_x, STR); if (false) 
 #define STRCASE(STR)        } else if (strcmp(_x, STR)==0){
 
@@ -23,6 +21,7 @@ Mode mode;
 Command_s command_s;
 char msg[255];
 
+void updateState(void);
 
 void setupCore0 (void){
   if(!wifi.wifiSTAFromEeprom())
@@ -38,8 +37,8 @@ void loopCore0(void){
     byte len = Udp.read(msg, 255);
     if (len > 0){
       msg[len] = 0;
-      printf("commamd [%s]\n",msg);
       command_s = cmd.get_message(msg);
+      updateState();
     }
   }
 }
@@ -48,9 +47,13 @@ void setupCore1(void){
 }
 
 void loopCore1(void){
-   if(!command_s.command.equals("")){
+   mode.update();
+}
 
-    printf("----------------------------------------\n");
+void updateState(void){
+if(!command_s.command.equals("")){
+
+    printf("--------------------------------\n");
     printf("Command: [%s]\n",command_s.command.c_str());
 	  printf("Data:    [%s]\n",command_s.data.c_str());
 
@@ -73,32 +76,28 @@ void loopCore1(void){
         wifi.wifiAP();
       STRCASE ("WifiSTA") 
         wifi.wifiSTAFromEeprom();
-        command_s.command = "";
       STRCASE ("SSID") 
         mem.setOffsetW(0);
         mem.WriteConf(command_s.data);
-        command_s.command = "";
       STRCASE ("Password")
         mem.WriteConf(command_s.data);
-        command_s.command = "";
 	    }    
    }
    command_s.command = "";
-   mode.update();
 }
 
 void taskCore0( void * pvParameters ){
-  Serial.print("Task1 running on core ");
+  Serial.print("Task0 running on core ");
   Serial.println(xPortGetCoreID());
   setupCore0(); 
   for(;;){
     loopCore0();
-    delay (500);
+    delay (300);
   }
 }
 
 void taskCore1( void * pvParameters ){
-  Serial.print("Task2 running on core ");
+  Serial.print("Task1 running on core ");
   Serial.println(xPortGetCoreID());
   setupCore1();
   for(;;){

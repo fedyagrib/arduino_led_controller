@@ -3,29 +3,54 @@
 
 
 Mode::Mode(){
+	delay(2000);
 	FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
     FastLED.setBrightness(BRIGHTNESS);
     
-    setMode(MODE);
+    currentPalette = bhw3_62_gp;
     currentBlending = LINEARBLEND;
 }
 
 Mode::~Mode(){}
 
-void Mode::FillLEDsFromPaletteColors( uint8_t colorIndex)
-{ 
-    for( int i = START_LED_INDEX; i < NUM_LEDS + START_LED_INDEX; i++) {
-        leds[i] = ColorFromPalette( currentPalette, colorIndex, BRIGHTNESS, currentBlending);
+void Mode::FillLEDsFromPaletteColors( uint8_t colorIndex, uint8_t brightness)
+{   
+    for( int i = 0; i < NUM_LEDS; i++) {
+        leds[i] = ColorFromPalette( currentPalette, colorIndex, brightness, currentBlending);
         colorIndex += 3;
     }
 }
 
+
+
 void Mode::update(){
 	static uint8_t startIndex = 0;
     startIndex = startIndex + 1; /* motion speed */
-    
-    FillLEDsFromPaletteColors( startIndex);
-    
+
+	//плавное изменение яркости
+	if(MODE == NEWMODE){
+		if(BRIGHTNESS > CURBRIGHTNESS){
+			CURBRIGHTNESS+=1;
+		}
+		if(BRIGHTNESS < CURBRIGHTNESS){
+			CURBRIGHTNESS-=1;
+		}
+	}
+	/* плавное уменьшение яркости до 0
+	 * затем измнение режима 
+	 * затем возращение прежней яркости
+	 */
+
+    else{
+		if(CURBRIGHTNESS!=0){
+			CURBRIGHTNESS-=1;
+		}else{
+			MODE = NEWMODE;
+			changeMode();
+		}
+	}
+
+	FillLEDsFromPaletteColors(startIndex, CURBRIGHTNESS);
     FastLED.show();
     FastLED.delay(UPDATES_PER_SECOND);
 }
@@ -33,7 +58,6 @@ void Mode::update(){
 void Mode::setBright(int value){
 	if(value>0){
 		BRIGHTNESS = value % 256;
-		FastLED.setBrightness(BRIGHTNESS);
 	}
 
 }
@@ -66,17 +90,22 @@ void Mode::setDelay(int value){
 
 void Mode::setMode(int value){
 	if (value > 0){
-		if (value != MODE){
-			switch (value){
-				case 0: currentPalette = bhw3_62_gp;
-						break;
-				case 1: currentPalette = bhw3_61_gp;
-						break;
-				case 2: currentPalette = gr63_hult_gp;
-						break;		
-			};
-		}
+		NEWMODE = value;
+		
 	}
+}
+
+void Mode::changeMode(){
+	switch (MODE){
+		case 0: currentPalette = SetupTotallyRandomPalette();
+				break;
+		case 1: currentPalette = bhw3_62_gp;
+				break;
+		case 2: currentPalette = bhw3_61_gp;
+				break;
+		case 3: currentPalette = gr63_hult_gp;
+				break;		
+	};
 }
 
 void Mode::setBlending(int value){

@@ -12,18 +12,23 @@
 class Mode{
 private:
     
-    int MODE = 0; 
+    int MODE = 1; 
+    int NEWMODE = 1;
+
     int START_LED_INDEX = 0;
     int NUM_LEDS  =  300;
-    int BRIGHTNESS = 150;
+    uint8_t BRIGHTNESS = 60;
+    uint8_t CURBRIGHTNESS = 0; //если 0 - то плавный запуск
     int UPDATES_PER_SECOND = 10;
 
     CRGB * leds = new CRGB[NUM_LEDS];
 
-    CRGBPalette16 currentPalette ;
+    CRGBPalette16 currentPalette;
     TBlendType    currentBlending;
 
-    void FillLEDsFromPaletteColors( uint8_t colorIndex);
+    void FillLEDsFromPaletteColors( uint8_t colorIndex, uint8_t brightness);
+
+    void changeMode();
 
 public:
     Mode();

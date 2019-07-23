@@ -22,6 +22,13 @@ DEFINE_GRADIENT_PALETTE( gr63_hult_gp ) {
   189, 198,243,203,
   255, 167, 34,211,};
 
+CRGBPalette16 SetupTotallyRandomPalette(){
+  CRGBPalette16 result;
+    for( int i = 0; i < 16; i++) {
+      result[i] = CHSV( random8(), 255, random8());
+    }
+  return result;
+}
 
 
 
