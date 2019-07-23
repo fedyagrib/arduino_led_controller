@@ -1,66 +1,116 @@
 #include "Command.hpp"
 
-Command::Command(){
-    Serial.println("Command::Command()");
-    p_wifi  = new WifiConfig();
-    p_mem   = new MemConfig();
-    p_mode  = new Mode();
+Command::Command(){}
+
+Command::~Command(){}
+
+void Command::checkMark(bool * start, String defword, String msg, int * index_msg){
+	int defSize = defword.length();
+	int msgSize = msg.length();
+
+	int i = * index_msg;
+	bool enable = * start;
+
+	int def_i   = 0;
+	int check_i = 0;
+
+	for (; i < msgSize; i++){
+		if(!enable){
+			if(def_i < defSize){
+				if(msg[i] == defword[def_i]){
+					check_i++;
+				}
+				def_i++;
+				
+			}else if(check_i == defSize){
+				enable = true;
+				break;
+			}
+		}
+	}
+
+	* start = enable;
+	* index_msg = i;
 }
 
-Command::~Command(){ 
-    delete p_wifi;
-    delete p_mem;
-    delete p_mode;
+String Command::readValue(bool * end, String defword, String msg, int * index_msg) {
+	String result = "";
+
+	int defSize = defword.length();
+	int msgSize = msg.length();
+
+	int i = *index_msg;
+	bool enable = *end;
+
+	int def_i = 0;
+	int check_i = 0;
+
+	for (; i < msgSize; i++) {
+		if (!enable) {
+			if (msg[i] != '<') {
+				result += msg[i];
+			} else {
+				i--;
+				enable = true;
+			}
+		} else {
+			if (def_i < defSize) {
+				if (msg[i] == defword[def_i]) {
+					check_i++;
+				}
+				def_i++;
+			} else {
+				if (check_i == defSize) {
+					break;
+				} else {
+					result = "";
+				}
+			}
+		}
+	}
+	*end = enable;
+	*index_msg = i;
+	return result;
 }
 
-void Command::printCommand(void){
-    Serial.printf("Command: [%c]\n", command_s->command);
-    Serial.printf("Data:    [%s]\n", command_s->data);
-}
+Command_s Command::get_message(String msg){
 
-void Command::setCommand(Command_s * command){
-    command_s = command;
-}
+	Command_s result;
 
-void Command::data2Struct(void){
-    Serial.println("------------------------------------");
-    printCommand();
+	bool msgStartCheck = false;
+	bool cmdStartCheck = false;
+	bool cmdEndCheck = false;
+	bool dataStartCheck = false;
+	bool dataEndCheck = false;
+	bool msgEndCheck = false;
 
-    switch (command_s->command)
-    {
-    case ('A'):
-        Serial.println("exe command: create Wifi Access Point");
-        p_wifi->wifiAP();
-        break;
+	int msgSize= msg.length();
 
-    case ('B'):
-        Serial.println("exe command: setBrightness(empty)");
-        p_mode->setBright(command_s->data[0]);
-        break;
+	for (int i = 0; i < msgSize; i++){
 
-    case ('C'):
-        Serial.println("exe command: setColor");
-        p_mode->setRgb((Rgb_s *)command_s->data);
-        break;
+		//проверка на начало сообщения
+		if(!msgStartCheck){
+			checkMark(&msgStartCheck, msgStart, msg, &i);
+		}
 
-    case ('M'):
-        Serial.println("exe command: changeMode");
-        p_mode->setMode(command_s->data[0]);
-        break;
+		//если между <msg> </msg>
+		if(msgStartCheck && !cmdEndCheck){
+			//check cmd
+			checkMark(&cmdStartCheck, cmdStart, msg, &i);
+			result.command = readValue(&cmdEndCheck, cmdEnd, msg, &i);
+		}
 
-    case ('P'):
-        Serial.println("exe command: WritePassword");
-        p_mem->WriteConf(command_s->data);
-        break;
+		if(msgStartCheck && !dataEndCheck){
+			//check data
+			checkMark(&dataStartCheck, dataStart, msg, &i);
+			result.data = readValue(&dataEndCheck, dataEnd, msg, &i);
+		}
 
-    case ('S'):
-        Serial.println("exe command: WriteSSID");
-        p_mem->setOffsetW(0);
-        p_mem->WriteConf(command_s->data);
-        break;
+		//если дошли до </msg>
+		if(msgStartCheck && cmdEndCheck && dataEndCheck){
+			readValue(&msgEndCheck, msgEnd, msg, &i);
+		}
+	}
+    return result;
 
-    default:
-        break;
-    }
-    
 }

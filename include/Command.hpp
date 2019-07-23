@@ -1,28 +1,36 @@
-#include "WifiConfig.hpp"
-#include "MemConfig.hpp"
-#include "Mode.hpp"
+#ifndef COMMAND_HPP_
+#define COMMAND_HPP_
+
+#include "Arduino.h"
 
 struct Command_s{
-    char command;
-    char data[16];
+	String command;
+	String data;
 };
 
 class Command{
 private:
-    Command_s * command_s;
 
-    WifiConfig  * p_wifi;
-    MemConfig   * p_mem;
-    Mode        * p_mode;
-    
-    void printCommand(void);
+    String msgStart = "<msg>";
+    String msgEnd	= "</msg>";
+
+    String cmdStart = "<cmd>";
+    String cmdEnd 	= "</cmd>";
+
+    String dataStart = "<data>";
+    String dataEnd 	 = "</data>";
+
+    String lengthStart 	= "<l>";
+    String lengthEnd 	= "</l>";
+
+    void checkMark(bool * start, String defword, String msg, int * index_msg);
+    String readValue(bool * end, String defword, String msg, int * index_msg);
 
 public:
- 
     Command();
     ~Command();
 
-    void setCommand(Command_s * command);
-    Command_s * getCommand(void);
-    void data2Struct(void);
+    Command_s get_message(String msg);
 };
+
+#endif /* COMMAND_HPP_ */

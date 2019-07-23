@@ -17,18 +17,16 @@ void MemConfig::setOffsetR(byte value){
     offsetR=value;
 }
 
-void MemConfig::WriteConf(char* word) {
-
-  char* temp=word;
-  byte sizeWord = strlen(temp);
+void MemConfig::WriteConf(String word) {
+  byte sizeWord = word.length();
   
   EEPROM.write(offsetW, sizeWord);
   offsetW++;
 
   for (byte i = 0; i < sizeWord; i++) {
-    EEPROM.write(offsetW, *temp);
+    EEPROM.write(offsetW, word[i]);
     offsetW++;
-    temp++;
+    //temp++;
   }
 
   EEPROM.commit();

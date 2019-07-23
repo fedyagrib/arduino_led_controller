@@ -1,7 +1,11 @@
 #include "WifiConfig.hpp"
 
-WifiConfig::WifiConfig(){}
-WifiConfig::~WifiConfig(){}
+WifiConfig::WifiConfig(){
+    p_mem = new MemConfig();
+}
+WifiConfig::~WifiConfig(){
+    delete p_mem;
+}
 
 bool WifiConfig::wifiSTA(const char *ssid, const char *password)
 {
@@ -28,15 +32,15 @@ bool WifiConfig::wifiSTA(const char *ssid, const char *password)
         tray++;
         delay(500);
         Serial.print(".");
-        if (tray > 30)
+        if (tray > 20)
             return 0;
     }
 
     ip = WiFi.localIP();                                                                                                                                                                                                                                                                                                                                 
     ip[3] = 90;
-    WiFi.config(ip, subnet, gateway, dns); //ip=xxx.xxx.xxx.90
-    WiFi.mode(WIFI_STA);                   //WiFi mode station (connect to wifi router only
-    Serial.print("STA local ip: ");
+    WiFi.config(ip, subnet, gateway, dns); //ip=192.168.xxx.90
+    WiFi.mode(WIFI_STA); //WiFi mode station (connect to wifi router only)
+    Serial.print("\nSTA local ip: ");
     Serial.println(WiFi.localIP());
     return 1;
 }
@@ -46,5 +50,11 @@ void WifiConfig::wifiAP()
     Serial.println("Switching to Wifi AP...");
     WiFi.disconnect();
     WiFi.softAP("Ledochka", "FUCKYOUBITCH");
-    Serial.print("Ap local ip: 192.168.4.1");
+    Serial.println("Ap local ip: 192.168.4.1");
+}
+
+bool WifiConfig::wifiSTAFromEeprom()
+{
+  p_mem->setOffsetR(0);
+  return wifiSTA(p_mem->ReadConf().c_str(), p_mem->ReadConf().c_str());
 }

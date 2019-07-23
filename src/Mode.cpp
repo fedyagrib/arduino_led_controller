@@ -1,41 +1,86 @@
 #include "Mode.hpp"
+#include "Palettes.hpp"
 
-Mode::Mode(){}
 
-Mode::~Mode(){
-	delete rgb_s;
+Mode::Mode(){
+	FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+    FastLED.setBrightness(BRIGHTNESS);
+    
+    setMode(MODE);
+    currentBlending = LINEARBLEND;
 }
 
-void Mode::changeMode(void){
-	Serial.printf("changeMode %d (empty)\n", mode);
-	switch (mode)
-	{
-	case 0:
-		Serial.printf("changeMode %d", mode);
-		break;
+Mode::~Mode(){}
+
+void Mode::FillLEDsFromPaletteColors( uint8_t colorIndex)
+{ 
+    for( int i = START_LED_INDEX; i < NUM_LEDS + START_LED_INDEX; i++) {
+        leds[i] = ColorFromPalette( currentPalette, colorIndex, BRIGHTNESS, currentBlending);
+        colorIndex += 3;
+    }
+}
+
+void Mode::update(){
+	static uint8_t startIndex = 0;
+    startIndex = startIndex + 1; /* motion speed */
+    
+    FillLEDsFromPaletteColors( startIndex);
+    
+    FastLED.show();
+    FastLED.delay(UPDATES_PER_SECOND);
+}
+
+void Mode::setBright(int value){
+	if(value>0){
+		BRIGHTNESS = value % 256;
+		FastLED.setBrightness(BRIGHTNESS);
+	}
+
+}
+void Mode::setStartLed(int value){
+	if(value > 0 && value < 301){
+		START_LED_INDEX = value;
+		if (value + NUM_LEDS > 300){
+			NUM_LEDS = 300 - START_LED_INDEX;
+		}
+		FastLED.clear();
+	}
+
+}
+void Mode::setNumbLeds(int value){
+	if(value > 0 && value < 301){
+		NUM_LEDS = value;
+		if (value + NUM_LEDS > 300){
+			START_LED_INDEX = 300 - NUM_LEDS;
+		}
+		FastLED.clear();
 	}
 }
 
-void Mode::changeBright(void){
-	Serial.printf("changeBright %d (empty)\n", bright);
+void Mode::setDelay(int value){
+	if(value>0){
+		UPDATES_PER_SECOND = value;
+	}
+
 }
 
-void Mode::changeRgb(void){
-	Serial.printf("changeRgb %02x%02x%02x (empty)\n", rgb_s->red, rgb_s->green, rgb_s->blue);
+void Mode::setMode(int value){
+	if (value > 0){
+		if (value != MODE){
+			switch (value){
+				case 0: currentPalette = bhw3_62_gp;
+						break;
+				case 1: currentPalette = bhw3_61_gp;
+						break;
+				case 2: currentPalette = gr63_hult_gp;
+						break;		
+			};
+		}
+	}
 }
 
-void Mode::setMode (char value){
-	mode = value;
-	changeMode();
+void Mode::setBlending(int value){
+	if (value == 0 || value == 1){
+		currentBlending = (TBlendType)value;
+	}
 }
-
-void Mode::setBright (char value){
-	bright = value;
-	changeBright();
-}
-
-void Mode::setRgb(Rgb_s * value){
-	rgb_s = value;
-	changeRgb();
-}
-

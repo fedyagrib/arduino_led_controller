@@ -1,3 +1,6 @@
+#ifndef MEM_CONFIG_HPP_
+#define MEM_CONFIG_HPP_
+
 #include "Arduino.h"
 #include <EEPROM.h>
 
@@ -15,5 +18,7 @@ public:
     void setOffsetR(byte value);
 
     String ReadConf();
-    void WriteConf(char* word);
+    void WriteConf(String word);
 };
+
+#endif /* MEM_CONFIG_HPP_ */
