@@ -1,2 +1,27 @@
+###ESP32 LED CONTROLLER
+
+------------
+
+
+This project made to ESP32 and WS2812.
+ESP32 get commands from WIFI UDP. Commands are look like:
+```
+<msg>
+  <cmd>command</cmd>
+  <data>data</data>
+</msg>
+```
+
+In file Main.cpp there are supported commands:
+- **Mode** - set pallete from 0 to 3 (you can add your own)
+- **Bright** - set led brigth (value > 255 ? value = value % 255)
+- **Delay** - delay in led update (1000 =~1 second)
+- **NumLeds** - number of leds (default = 300; if you want more, pls change value NUM_LEDS in mode.hpp)
+- **SetStardLed** - led starts from (default = 0, must be less then 300)
+- **SetBlending** - (default 1)
+- **WifiAP** - switch to WIFI AP ( you can change ssid and password in WifiConfig::wifiAP() ). addres 192.168.4.1::2390
+- **WifiSTA** - switch to WIFI STA (load ssid and password fromm eeprom). if you are first time - use commands the next two commands from WiFI AP mode
+- **SSID** - load to eeprom ssid of your router
+- **Password** - load to eeprom password of your router
 
 
