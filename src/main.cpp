@@ -24,9 +24,7 @@ char msg[255];
 void updateState(void);
 
 void setupCore0 (void){
-  if(!wifi.wifiSTAFromEeprom())
-		wifi.wifiAP();
-	Udp.begin(2390);
+  
 }
 
 void loopCore0(void){
@@ -108,6 +106,10 @@ void taskCore1( void * pvParameters ){
 void setup() {
   Serial.begin(115200); 
   EEPROM.begin(64);
+
+  if(!wifi.wifiSTAFromEeprom())
+		wifi.wifiAP();
+	Udp.begin(2390);
   
   //create a task that will be executed in the Task1code() function, with priority 1 and executed on core 0
   xTaskCreatePinnedToCore(
