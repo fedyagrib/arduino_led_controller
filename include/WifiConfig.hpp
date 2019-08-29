@@ -1,8 +1,7 @@
 #ifndef WIFI_CONFIG_HPP_
 #define WIFI_CONFIG_HPP_
 
-//#define ESP8266
-#define ESP32
+
 
 #ifdef ESP8266
 	#include <ESP8266WiFi.h>

@@ -1,10 +1,13 @@
-#include <Arduino.h>
 #include <WiFiUdp.h>
 #include <FastLED.h>
+#define ESP32
 #include "Command.hpp"
 #include "WifiConfig.hpp"
 #include "MemConfig.hpp"
 #include "Mode.hpp"
+
+
+//#define ESP32
 
 #define STRSWITCH(STR)      char _x[16]; strcpy(_x, STR); if (false) 
 #define STRCASE(STR)        } else if (strcmp(_x, STR)==0){
@@ -59,24 +62,37 @@ if(!command_s.command.equals("")){
     STRSWITCH(command_s.command.c_str()){
       STRCASE ("Mode")
         mode.setMode(atoi(command_s.data.c_str()));
+      
       STRCASE ("Bright")
         mode.setBright(atoi(command_s.data.c_str()));
+      
+      STRCASE ("PerMode")
+        byte color[15];
+        command_s.data.getBytes(color, 15);
+        mode.setPersonPalette(color);
+      
       STRCASE ("Delay")
         mode.setDelay(atoi(command_s.data.c_str()));
+      
       STRCASE ("EndLed")
         mode.setNumbLeds(atoi(command_s.data.c_str()));  
+      
       STRCASE ("StartLed")
         mode.setStartLed(atoi(command_s.data.c_str()));  
+      
       STRCASE ("Blend")
         mode.setStartLed(atoi(command_s.data.c_str()));  
 
       STRCASE ("WifiAP") 
         wifi.wifiAP();
+
       STRCASE ("WifiSTA") 
         wifi.wifiSTAFromEeprom();
+
       STRCASE ("SSID") 
         mem.setOffsetW(0);
         mem.WriteConf(command_s.data);
+      
       STRCASE ("Password")
         mem.WriteConf(command_s.data);
 	    }    
