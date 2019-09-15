@@ -21,7 +21,7 @@ public:
     WifiConfig();
     ~WifiConfig();
     bool wifiSTA(const char *ssid, const char *password);
-    void wifiAP();
+    void wifiAP(const char ssid[], const char psswrd[]);
     bool wifiSTAFromEeprom();
 };
 

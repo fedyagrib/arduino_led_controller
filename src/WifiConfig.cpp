@@ -45,11 +45,11 @@ bool WifiConfig::wifiSTA(const char *ssid, const char *password)
     return 1;
 }
 
-void WifiConfig::wifiAP()
+void WifiConfig::wifiAP(const char ssid[], const char psswrd[])
 {
     Serial.println("Switching to Wifi AP...");
     WiFi.disconnect();
-    WiFi.softAP("Ledochka", "FUCKYOUBITCH");
+    WiFi.softAP(ssid, psswrd);
     Serial.println("Ap local ip: 192.168.4.1");
 }
 

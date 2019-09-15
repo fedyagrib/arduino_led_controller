@@ -26,6 +26,7 @@ private:
     int NUM_LEDS = 300; //при изменение - исправить значения в условиях в функциях setStartLed и setNumbLeds на NUM_LEDS+1
 
     int UPDATES_PER_SECOND = 10; //задержка обновления
+    int BRIGHT_CHANGE = 5;
 
     CRGB * leds = new CRGB[NUM_LEDS];
 
@@ -37,7 +38,7 @@ private:
 
     void changeMode();
     void SetupTotallyRandomPalette();
-    void slightChange(int * def_value, int * cur_value);
+    void slightChange(int * def_value, int * cur_value,int val_chage);
 public:
     Mode();
     ~Mode();

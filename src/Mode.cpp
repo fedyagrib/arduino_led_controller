@@ -16,16 +16,17 @@ Mode::Mode(){
 
 Mode::~Mode(){}
 
-void Mode::slightChange(int * def_value, int * cur_value){
-	if((*cur_value) != (*def_value)){
+void Mode::slightChange(int * def_value, int * cur_value, int val_chage = 1){
+	//если модуль разницы значение больше чем значение val_chage (иначе будет жопа)
+	if(abs((*cur_value) - (*def_value)) > val_chage){
 		//если нынешнее значение больше эталоного
 		if((*cur_value) > (*def_value)){
 			//то уменьшаем нынешнее
-			(*cur_value)--;
+			(*cur_value) -= val_chage;
 		//если нынешнее значение меньше эталоного	
 		}else {
 			//увеличиваем его
-			(*cur_value)++;
+			(*cur_value) += val_chage;
 		}
 	}
 }
@@ -41,11 +42,11 @@ void Mode::update(){
 	static uint8_t startIndex = 0;
     startIndex = startIndex + 1; /* motion speed */
 
-	//если новый режим не соотвествует текущему умен 
+	//если новый режим не соотвествует текущему
     if(MODE != NEWMODE){
 		//уменьшаем яркость до нуля
-		if(CURBRIGHTNESS!=0){
-			CURBRIGHTNESS-=1;
+		if(CURBRIGHTNESS > BRIGHT_CHANGE){
+			CURBRIGHTNESS -= BRIGHT_CHANGE;
 		//если яркость уже ноль - устанавливаем новый режим
 		}else{
 			Serial.println("update mode");
@@ -56,7 +57,7 @@ void Mode::update(){
 	//возращаем яркость если была смена режима
 	//или при команде изменения яркости - плавное изменение 
 	else{
-		slightChange(&BRIGHTNESS, &CURBRIGHTNESS);
+		slightChange(&BRIGHTNESS, &CURBRIGHTNESS, BRIGHT_CHANGE);
 	}
 
 	//заполняем палетку
@@ -64,7 +65,10 @@ void Mode::update(){
 	//подаем подсветке
     FastLED.show();
 	//ставим задержку
-    FastLED.delay(UPDATES_PER_SECOND);
+	//if(BRIGHTNESS==CURBRIGHTNESS && MODE == NEWMODE)
+    	FastLED.delay(UPDATES_PER_SECOND);
+	//else
+	//FastLED.delay(UPDATES_PER_SECOND);
 }
 
 void Mode::setBright(int value){
