@@ -1,7 +1,7 @@
 #ifndef MODE_HPP_
 #define MODE_HPP_
 #ifdef ESP32
-    #define LED_PIN     32
+    #define LED_PIN     13
 #endif
 #ifdef ESP8266
     #define LED_PIN  13

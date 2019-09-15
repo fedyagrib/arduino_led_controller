@@ -107,11 +107,11 @@ void Mode::changeMode(){
 				break;
 		case 1: currentPalette = bhw3_62_gp;
 				break;
-		case 2: currentPalette = bhw3_61_gp;
+		case 2: currentPalette = bhw1_05_gp;
 				break;
 		case 3: currentPalette = gr63_hult_gp;
 				break;
-		default: currentPalette = personPalette;
+		case 4: currentPalette = personPalette;
 				break;
 	};
 }

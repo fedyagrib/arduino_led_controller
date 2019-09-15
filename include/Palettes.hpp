@@ -7,13 +7,21 @@ DEFINE_GRADIENT_PALETTE( bhw3_62_gp ) {
   181, 159,  1, 29,
   255,  63,  4, 68};
 
-DEFINE_GRADIENT_PALETTE( bhw3_61_gp ) {
-    0,  14,  1, 27,
-   48,  17,  1, 88,
-  104,   1, 88,156,
-  160,   1, 54, 42,
-  219,   9,235, 52,
-  255, 139,235,233};
+DEFINE_GRADIENT_PALETTE( bhw1_05_gp ) {
+    0, 184,  1,128,
+  160,   1,193,182,
+  219, 153,227,190,
+  255, 255,255,255};
+
+  // Gradient palette "bhw1_07_gp", originally from
+// http://soliton.vm.bytemark.co.uk/pub/cpt-city/bhw/bhw1/tn/bhw1_07.png.index.html
+// converted for FastLED with gammas (2.6, 2.2, 2.5)
+// Size: 8 bytes of program space.
+
+DEFINE_GRADIENT_PALETTE( bhw1_07_gp ) {
+    0, 232, 65,  1,
+  255, 229,227,  1};
+
 
 DEFINE_GRADIENT_PALETTE( gr63_hult_gp ) {
     0, 168,254,184,
