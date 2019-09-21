@@ -18,7 +18,8 @@ Mode::~Mode(){}
 
 void Mode::slightChange(int * def_value, int * cur_value, int val_chage = 1){
 	//если модуль разницы значение больше чем значение val_chage (иначе будет жопа)
-	if(abs((*cur_value) - (*def_value)) > val_chage){
+	int temp = abs((*cur_value) - (*def_value));
+	if( temp >= val_chage){
 		//если нынешнее значение больше эталоного
 		if((*cur_value) > (*def_value)){
 			//то уменьшаем нынешнее
@@ -28,6 +29,8 @@ void Mode::slightChange(int * def_value, int * cur_value, int val_chage = 1){
 			//увеличиваем его
 			(*cur_value) += val_chage;
 		}
+	} else if(temp > 0 && temp < val_chage){
+		(*cur_value) = (*def_value);
 	}
 }
 
@@ -72,7 +75,7 @@ void Mode::update(){
 }
 
 void Mode::setBright(int value){
-	if(value>0){
+	if(value>=0){
 		BRIGHTNESS = value % 256;
 	}
 }
@@ -127,5 +130,9 @@ void Mode::setBlending(int value){
 }
 
 void Mode::setPersonPalette(byte array[]){
-	personPalette=CRGBPalette16(array);
+	CRGB rgbarray[16];
+	for(int i=0; i<16;i++){
+		rgbarray[i]=CRGB(array[3*i],array[3*i+1],array[3*i+2]);
+	}
+	personPalette=CRGBPalette16(rgbarray);
 }

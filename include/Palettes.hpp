@@ -8,10 +8,11 @@ DEFINE_GRADIENT_PALETTE( bhw3_62_gp ) {
   255,  63,  4, 68};
 
 DEFINE_GRADIENT_PALETTE( bhw1_05_gp ) {
-    0, 184,  1,128,
+    0, 255,  0,228,
+  100, 184,  1,128,
   160,   1,193,182,
   219, 153,227,190,
-  255, 255,255,255};
+  255,   0,255,174};
 
   // Gradient palette "bhw1_07_gp", originally from
 // http://soliton.vm.bytemark.co.uk/pub/cpt-city/bhw/bhw1/tn/bhw1_07.png.index.html

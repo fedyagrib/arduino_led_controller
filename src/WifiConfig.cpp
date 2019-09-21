@@ -38,7 +38,7 @@ bool WifiConfig::wifiSTA(const char *ssid, const char *password)
 
     ip = WiFi.localIP();                                                                                                                                                                                                                                                                                                                                 
     ip[3] = 90;
-    WiFi.config(ip, subnet, gateway, dns); //ip=192.168.xxx.90
+    WiFi.config(ip, WiFi.gatewayIP(), WiFi.subnetMask(), dns); //ip=192.168.xxx.90
     WiFi.mode(WIFI_STA); //WiFi mode station (connect to wifi router only)
     Serial.print("\nSTA local ip: ");
     Serial.println(WiFi.localIP());
